@@ -1,0 +1,40 @@
+# fly.toml app configuration file for langfuse-web (frontend)
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'langfuse-web-green-dew-9322'
+primary_region = 'sin'
+
+[build]
+  dockerfile = 'web/Dockerfile'
+  [build.args]
+    SKIP_ENV_VALIDATION = "true"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[env]
+  NODE_ENV = 'production'
+  PORT = '3000'
+
+[[vm]]
+  memory = '2gb'
+  cpu_kind = 'shared'
+  cpus = 2
+
+# Health checks for the web service
+[checks]
+  [checks.web_health]
+    type = "http"
+    grace_period = "60s"
+    interval = "30s"
+    method = "GET"
+    timeout = "10s"
+    path = "/api/public/health"
+

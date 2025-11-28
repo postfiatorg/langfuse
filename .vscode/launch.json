@@ -23,6 +23,27 @@
         "uriFormat": "%s",
         "action": "debugWithChrome"
       }
+    },
+    {
+      "name": "Deploy: API to Fly.io",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "fly deploy --config fly-api.toml",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Deploy: Frontend to Fly.io",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "fly deploy --config fly-web.toml",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Deploy: ClickHouse to Fly.io",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "fly deploy --config fly-ch.toml",
+      "cwd": "${workspaceFolder}"
     }
   ]
 }

@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<clickhouse>
+    <!-- Listen on all interfaces -->
+    <listen_host>::</listen_host>
+    
+    <!-- HTTP interface (port 8123) -->
+    <http_port>8123</http_port>
+    
+    <!-- Native TCP interface (port 9000) -->
+    <tcp_port>9000</tcp_port>
+    
+    <!-- Disable authentication requirement for testing (enable in production) -->
+    <user_defined_default_database>default</user_defined_default_database>
+    
+    <!-- Logging -->
+    <logger>
+        <level>information</level>
+        <console>true</console>
+    </logger>
+    
+    <!-- Data storage path -->
+    <path>/var/lib/clickhouse/</path>
+    
+    <!-- Temp path -->
+    <tmp_path>/var/lib/clickhouse/tmp/</tmp_path>
+    
+    <!-- User path -->
+    <user_files_path>/var/lib/clickhouse/user_files/</user_files_path>
+    
+    <!-- Format schemas path -->
+    <format_schema_path>/var/lib/clickhouse/format_schemas/</format_schema_path>
+    
+    <!-- Default profile settings -->
+    <profiles>
+        <default>
+            <max_memory_usage>10000000000</max_memory_usage>
+            <use_uncompressed_cache>0</use_uncompressed_cache>
+            <load_balancing>random</load_balancing>
+        </default>
+    </profiles>
+    
+    <!-- Users configuration -->
+    <users>
+        <default>
+            <password from_env="CLICKHOUSE_PASSWORD"/>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <profile>default</profile>
+            <quota>default</quota>
+        </default>
+    </users>
+    
+    <!-- Quotas -->
+    <quotas>
+        <default>
+            <interval>
+                <duration>3600</duration>
+                <queries>0</queries>
+                <errors>0</errors>
+                <result_rows>0</result_rows>
+                <read_rows>0</read_rows>
+                <execution_time>0</execution_time>
+            </interval>
+        </default>
+    </quotas>
+</clickhouse>
+

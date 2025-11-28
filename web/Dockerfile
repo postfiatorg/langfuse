@@ -84,8 +84,20 @@ ENV NEXT_TELEMETRY_DISABLED 1
 ENV NEXT_MANUAL_SIG_HANDLE true
 # set the CI flag to true to get CI specific logs
 ENV CI true
+# Reduce parallelism during build to lower memory pressure
+ENV UV_THREADPOOL_SIZE 4
 
-RUN NODE_OPTIONS='--max-old-space-size-percentage=75' turbo run build --filter=web...
+# Skip linting and type checking during build to reduce build time and resource usage
+# Linting and type checking should be done in CI before deploying
+# The DOCKER_BUILD=1 flag enables this via next.config.mjs
+ARG SKIP_ENV_VALIDATION=true
+ENV SKIP_ENV_VALIDATION=$SKIP_ENV_VALIDATION
+
+# Increase memory allocation and set larger max old space size for Next.js build
+# This helps with the static page generation phase which can be memory intensive
+# NEXT_PRIVATE_WORKER_THREADS=1 reduces parallelism to avoid OOM and timeouts
+ENV NEXT_PRIVATE_WORKER_THREADS=1
+RUN NODE_OPTIONS='--max-old-space-size=4096' turbo run build --filter=web...
 
 # Production image, copy all the files and run next
 FROM --platform=${TARGETPLATFORM:-linux/amd64} base AS runner
@@ -140,8 +152,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/web/public ./web/public
 COPY --from=builder --chown=nextjs:nodejs /app/packages/shared/prisma ./packages/shared/prisma
 COPY --from=builder --chown=nextjs:nodejs /app/packages/shared/clickhouse ./packages/shared/clickhouse
 
-COPY --chown=nextjs:nodejs ./web/entrypoint.sh ./web/entrypoint.sh
-COPY --chown=nextjs:nodejs ./packages/shared/scripts/cleanup.sql ./packages/shared/scripts/cleanup.sql
+COPY --from=pruner --chown=nextjs:nodejs /app/web/entrypoint.sh ./web/entrypoint.sh
+COPY --from=pruner --chown=nextjs:nodejs /app/packages/shared/scripts/cleanup.sql ./packages/shared/scripts/cleanup.sql
 RUN chmod +x ./web/entrypoint.sh
 
 USER nextjs

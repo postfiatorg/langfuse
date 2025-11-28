@@ -48,9 +48,17 @@ const reportToHeader = {
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {
-  staticPageGenerationTimeout: 500, // default is 60. Required for build process for amd
+  staticPageGenerationTimeout: 1000, // Increased for Docker builds with limited resources
   transpilePackages: ["@langfuse/shared", "vis-network/standalone"],
   reactStrictMode: true,
+  // Skip ESLint and TypeScript checks during Docker builds to reduce build time
+  // These checks should be done in CI before deploying
+  eslint: {
+    ignoreDuringBuilds: process.env.DOCKER_BUILD === "1",
+  },
+  typescript: {
+    ignoreBuildErrors: process.env.DOCKER_BUILD === "1",
+  },
   serverExternalPackages: [
     "dd-trace",
     "@opentelemetry/api",

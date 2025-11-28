@@ -1,0 +1,59 @@
+# fly.toml app configuration file for langfuse-ch (ClickHouse)
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+#
+
+app = 'langfuse-ch'
+primary_region = 'sin'
+
+[build]
+  dockerfile = 'clickhouse/Dockerfile'
+
+[env]
+  CLICKHOUSE_DB = 'default'
+  CLICKHOUSE_USER = 'default'
+
+# Persistent volume for ClickHouse data
+[mounts]
+  source = 'clickhouse_data'
+  destination = '/var/lib/clickhouse'
+  initial_size = '10gb'
+
+# HTTP Interface (port 8123)
+[[services]]
+  internal_port = 8123
+  protocol = 'tcp'
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[services.ports]]
+    port = 8123
+    handlers = ['http']
+
+  # Health check for HTTP interface
+  [[services.http_checks]]
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '30s'
+    method = 'GET'
+    path = '/ping'
+    protocol = 'http'
+
+# Native TCP Interface (port 9000) - for client connections
+[[services]]
+  internal_port = 9000
+  protocol = 'tcp'
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[services.ports]]
+    port = 9000
+
+# VM configuration - ClickHouse needs good memory/CPU
+[[vm]]
+  memory = '4gb'
+  cpu_kind = 'shared'
+  cpus = 2
