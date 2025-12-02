@@ -18,7 +18,7 @@ primary_region = 'sin'
 [mounts]
   source = 'clickhouse_data'
   destination = '/var/lib/clickhouse'
-  initial_size = '10gb'
+  initial_size = '20gb'
 
 # HTTP Interface (port 8123)
 [[services]]
@@ -53,7 +53,8 @@ primary_region = 'sin'
     port = 9000
 
 # VM configuration - ClickHouse needs good memory/CPU
+# Using performance-4x for 8GB RAM (ClickHouse config requires 10GB max_memory_usage)
 [[vm]]
-  memory = '4gb'
-  cpu_kind = 'shared'
-  cpus = 2
+  memory = '8gb'
+  cpu_kind = 'performance'
+  cpus = 4
