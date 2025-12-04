@@ -5,7 +5,7 @@
 #
 
 app = 'langfuse-ch'
-primary_region = 'sin'
+primary_region = 'iad'
 
 [build]
   dockerfile = 'clickhouse/Dockerfile'
@@ -16,7 +16,7 @@ primary_region = 'sin'
 
 # Persistent volume for ClickHouse data
 [mounts]
-  source = 'clickhouse_data'
+  source = 'clickhouse_data_iad'
   destination = '/var/lib/clickhouse'
   initial_size = '20gb'
 
@@ -35,8 +35,8 @@ primary_region = 'sin'
   # Health check for HTTP interface
   [[services.http_checks]]
     interval = '30s'
-    timeout = '5s'
-    grace_period = '30s'
+    timeout = '10s'
+    grace_period = '60s'
     method = 'GET'
     path = '/ping'
     protocol = 'http'

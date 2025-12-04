@@ -34,10 +34,29 @@
     <profiles>
         <default>
             <max_memory_usage>10000000000</max_memory_usage>
-            <use_uncompressed_cache>0</use_uncompressed_cache>
+            <!-- Enable uncompressed cache for faster repeated queries -->
+            <use_uncompressed_cache>1</use_uncompressed_cache>
+            <uncompressed_cache_size>2147483648</uncompressed_cache_size> <!-- 2GB -->
+            <!-- Enable query result cache -->
+            <use_query_cache>1</use_query_cache>
             <load_balancing>random</load_balancing>
+            <!-- Optimize for concurrent queries -->
+            <max_threads>8</max_threads>
+            <max_concurrent_queries>100</max_concurrent_queries>
+            <!-- Better timeout handling -->
+            <send_timeout>300</send_timeout>
+            <receive_timeout>300</receive_timeout>
+            <tcp_keep_alive_timeout>300</tcp_keep_alive_timeout>
         </default>
     </profiles>
+    
+    <!-- Query cache configuration -->
+    <query_cache>
+        <max_size_in_bytes>5368709120</max_size_in_bytes> <!-- 5GB -->
+        <max_entries>1024</max_entries>
+        <max_entry_size_in_bytes>104857600</max_entry_size_in_bytes> <!-- 100MB per entry -->
+        <max_entry_size_in_rows>30000000</max_entry_size_in_rows>
+    </query_cache>
     
     <!-- Users configuration -->
     <users>

@@ -4,7 +4,7 @@
 #
 
 app = 'langfuse-web-green-dew-9322'
-primary_region = 'sin'
+primary_region = 'iad'
 
 [build]
   dockerfile = 'web/Dockerfile'
@@ -14,9 +14,9 @@ primary_region = 'sin'
 [http_service]
   internal_port = 3000
   force_https = true
-  auto_stop_machines = 'stop'
+  auto_stop_machines = false
   auto_start_machines = true
-  min_machines_running = 0
+  min_machines_running = 1
   processes = ['app']
 
 [env]
@@ -24,17 +24,17 @@ primary_region = 'sin'
   PORT = '3000'
 
 [[vm]]
-  memory = '2gb'
-  cpu_kind = 'shared'
+  memory = '4gb'
+  cpu_kind = 'performance'
   cpus = 2
 
 # Health checks for the web service
 [checks]
   [checks.web_health]
     type = "http"
-    grace_period = "60s"
+    grace_period = "90s"
     interval = "30s"
     method = "GET"
-    timeout = "10s"
+    timeout = "20s"
     path = "/api/public/health"
 

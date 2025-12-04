@@ -12,7 +12,7 @@ This directory contains the ClickHouse configuration for deploying Langfuse on F
 ### 1. Create the Volume (First Time Only)
 
 ```bash
-fly volumes create clickhouse_data --region sin --size 10 --app langfuse-ch
+fly volumes create clickhouse_data_iad --region iad --size 10 --app langfuse-ch
 ```
 
 ### 2. Set the Password
